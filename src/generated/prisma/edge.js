@@ -107,7 +107,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\ProjectsNext.js\\inventory-app3\\src\\generated\\prisma",
+      "value": "D:\\ProjectsNext.js\\inventory-app\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -121,12 +121,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\ProjectsNext.js\\inventory-app3\\prisma\\schema.prisma",
+    "sourceFilePath": "D:\\ProjectsNext.js\\inventory-app\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
-    "schemaEnvPath": "../../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../../prisma",
   "clientVersion": "6.7.0",
