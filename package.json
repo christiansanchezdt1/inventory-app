@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:schema": "node scripts/db-run.mjs db/schema.sql",
+    "db:seed": "node scripts/db-run.mjs db/seed.sql",
+    "db:setup": "node scripts/db-run.mjs db/schema.sql db/seed.sql"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

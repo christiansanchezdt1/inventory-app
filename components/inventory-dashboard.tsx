@@ -55,6 +55,28 @@ type InventoryDashboardProps = {
   suppliers: Supplier[]
 }
 
+type HistoryChange = { before: unknown; after: unknown } | null
+
+// product_history.changes guarda {campo: {before, after}} en "update", los datos del producto en
+// "create" y {deletedProduct} en "delete" (ver recordProductHistory en product-actions.ts)
+function getHistoryChange(record: any, field: string): HistoryChange {
+  const changes = record.changes ?? {}
+  if (record.action_type === "update") {
+    const change = changes[field]
+    return change && typeof change === "object" && "before" in change ? change : null
+  }
+  const source = record.action_type === "delete" ? changes.deletedProduct : changes
+  return source && source[field] !== undefined && source[field] !== null
+    ? { before: null, after: source[field] }
+    : null
+}
+
+function formatHistoryChange(change: HistoryChange, format: (value: unknown) => string = String) {
+  if (!change) return "—"
+  if (change.before === null || change.before === undefined) return format(change.after)
+  return `${format(change.before)} → ${format(change.after)}`
+}
+
 export function InventoryDashboard({ initialProducts, categories, suppliers }: InventoryDashboardProps) {
   const [products, setProducts] = useState<Product[]>(initialProducts)
   const [searchTerm, setSearchTerm] = useState("")
@@ -724,7 +746,6 @@ export function InventoryDashboard({ initialProducts, categories, suppliers }: I
                       <TableHead>Stock</TableHead>
                       <TableHead>Precio</TableHead>
                       <TableHead>Estado</TableHead>
-                      <TableHead>Notas</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -734,54 +755,25 @@ export function InventoryDashboard({ initialProducts, categories, suppliers }: I
                         <TableCell>
                           <Badge
                             variant={
-                              record.action === "create"
+                              record.action_type === "create"
                                 ? "default"
-                                : record.action === "update"
+                                : record.action_type === "update"
                                   ? "outline"
                                   : "destructive"
                             }
                           >
-                            {record.action === "create"
+                            {record.action_type === "create"
                               ? "Creación"
-                              : record.action === "update"
+                              : record.action_type === "update"
                                 ? "Actualización"
                                 : "Eliminación"}
                           </Badge>
                         </TableCell>
+                        <TableCell>{formatHistoryChange(getHistoryChange(record, "stock"))}</TableCell>
                         <TableCell>
-                          {record.stock_before !== null && record.stock_after !== null ? (
-                            <>
-                              {record.stock_before} → {record.stock_after}
-                            </>
-                          ) : record.stock_after !== null ? (
-                            record.stock_after
-                          ) : (
-                            "—"
-                          )}
+                          {formatHistoryChange(getHistoryChange(record, "price"), (v) => `$${Number(v).toFixed(2)}`)}
                         </TableCell>
-                        <TableCell>
-                          {record.price_before !== null && record.price_after !== null ? (
-                            <>
-                              ${Number(record.price_before).toFixed(2)} → ${Number(record.price_after).toFixed(2)}
-                            </>
-                          ) : record.price_after !== null ? (
-                            `$${Number(record.price_after).toFixed(2)}`
-                          ) : (
-                            "—"
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {record.status_before !== null && record.status_after !== null ? (
-                            <>
-                              {record.status_before} → {record.status_after}
-                            </>
-                          ) : record.status_after !== null ? (
-                            record.status_after
-                          ) : (
-                            "—"
-                          )}
-                        </TableCell>
-                        <TableCell>{record.notes || "—"}</TableCell>
+                        <TableCell>{formatHistoryChange(getHistoryChange(record, "status"))}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

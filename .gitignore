@@ -18,6 +18,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# env files (credenciales: nunca al repo)
+.env*
+!.env.example
+
 # vercel
 .vercel
 

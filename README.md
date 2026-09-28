@@ -44,36 +44,59 @@ app/
   reports/        # reportes
   types/          # tipos de dominio (Product, Customer, Order)
 components/       # componentes por módulo + ui/ (shadcn)
+db/
+  schema.sql      # esquema completo de la base (idempotente)
+  seed.sql        # datos de ejemplo
+  migrations/     # cambios para bases creadas con versiones anteriores
+scripts/db-run.mjs# aplica archivos .sql contra DATABASE_URL
 lib/db.ts         # conexión a Neon
-prisma/           # seed con productos de ejemplo
 ```
 
-Tablas usadas: `products`, `categories`, `suppliers`, `product_history`, `customers`, `orders`, `order_items`, `order_history`.
+### Base de datos
+
+| Tabla | Contenido |
+|---|---|
+| `categories`, `suppliers` | Categorías y proveedores de productos |
+| `products` | Productos: SKU único, stock, precio, costo y estado |
+| `product_history` | Altas, cambios y bajas de productos (`changes` en JSONB) |
+| `customers` | Clientes |
+| `orders`, `order_items` | Pedidos y sus líneas (borrar un pedido borra sus items) |
+| `order_history` | Altas, cambios y bajas de pedidos |
 
 ### Puesta en marcha
 
-Requisitos: Node.js 18.18 o superior y una base PostgreSQL (por ejemplo, un proyecto gratuito en Neon) con las tablas de arriba.
+Requisitos: Node.js 18.18 o superior y una base PostgreSQL en [Neon](https://neon.tech) (el plan gratuito alcanza).
 
 1. Instalar dependencias:
    ```bash
-   npm install
+   npm install        # o: pnpm install
    ```
-2. Crear `.env.local` con la cadena de conexión:
-   ```dotenv
-   DATABASE_URL=postgresql://usuario:clave@host/base?sslmode=require
+2. Crear `.env.local` a partir del ejemplo y pegar la cadena de conexión de Neon (Dashboard → Connect):
+   ```bash
+   cp .env.example .env.local
    ```
-3. Levantar el servidor de desarrollo:
+3. Crear las tablas y cargar datos de ejemplo:
+   ```bash
+   npm run db:setup   # = db:schema + db:seed
+   ```
+   Para crear solo las tablas, sin datos, usar `npm run db:schema`. También se puede pegar `db/schema.sql` en el SQL Editor de Neon.
+4. Levantar el servidor de desarrollo:
    ```bash
    npm run dev        # http://localhost:3000
    ```
+
+> **Base existente creada antes de `db/schema.sql`**: correr una vez `db/migrations/001_history_format.sql` en el SQL Editor de Neon. Hace que el historial de productos se registre y que se puedan borrar productos con historial.
 
 ### Scripts
 
 ```bash
 npm run dev        # servidor de desarrollo
-npm run build      # build de producción
+npm run build      # build de producción (necesita DATABASE_URL)
 npm run start      # servir el build
 npm run lint       # ESLint
+npm run db:schema  # crear/actualizar tablas
+npm run db:seed    # cargar datos de ejemplo
+npm run db:setup   # ambos
 ```
 
 ---
@@ -101,30 +124,44 @@ Web app for **inventory and order management** for a retail business: manage pro
 | Charts | Recharts |
 | Forms | react-hook-form, zod |
 
+### Database
+
+The full schema lives in `db/schema.sql` (idempotent) and sample data in `db/seed.sql`. Tables: `categories`, `suppliers`, `products`, `product_history`, `customers`, `orders`, `order_items`, `order_history`. History tables store changes as JSONB.
+
 ### Getting started
 
-Requirements: Node.js 18.18 or newer and a PostgreSQL database (e.g. a free Neon project) with the tables listed above.
+Requirements: Node.js 18.18 or newer and a PostgreSQL database on [Neon](https://neon.tech) (the free tier is enough).
 
 1. Install dependencies:
    ```bash
-   npm install
+   npm install        # or: pnpm install
    ```
-2. Create `.env.local` with the connection string:
-   ```dotenv
-   DATABASE_URL=postgresql://user:password@host/db?sslmode=require
+2. Create `.env.local` from the example and paste your Neon connection string (Dashboard → Connect):
+   ```bash
+   cp .env.example .env.local
    ```
-3. Start the development server:
+3. Create the tables and load sample data:
+   ```bash
+   npm run db:setup   # = db:schema + db:seed
+   ```
+   To create only the tables, use `npm run db:schema`. You can also paste `db/schema.sql` into Neon's SQL Editor.
+4. Start the development server:
    ```bash
    npm run dev        # http://localhost:3000
    ```
+
+> **Existing database created before `db/schema.sql`**: run `db/migrations/001_history_format.sql` once in Neon's SQL Editor. It makes product history actually get recorded and allows deleting products that have history.
 
 ### Scripts
 
 ```bash
 npm run dev        # development server
-npm run build      # production build
+npm run build      # production build (requires DATABASE_URL)
 npm run start      # serve the build
 npm run lint       # ESLint
+npm run db:schema  # create/update tables
+npm run db:seed    # load sample data
+npm run db:setup   # both
 ```
 
 ---
