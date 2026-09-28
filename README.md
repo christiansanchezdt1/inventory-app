@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Inventory App
 
-## Getting Started
+🇪🇸 [Español](#español) · 🇬🇧 [English](#english)
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Español
+
+Sistema web de **gestión de inventario y pedidos** para un comercio: administra productos, stock, clientes y pedidos desde un panel, con historial de cambios y reportes exportables.
+
+### Funcionalidades
+
+- **Inventario**: alta, edición y baja de productos con categoría, proveedor, precio, stock y estado (en stock, bajo stock, sin stock). Incluye búsqueda, filtros y estadísticas con gráficos.
+- **Historial de productos**: cada alta o modificación queda registrada con los cambios realizados.
+- **Clientes**: ficha de cliente, filtros, detalle y estadísticas.
+- **Pedidos**: creación de pedidos con varios productos, estados, historial de cambios e impresión del pedido.
+- **Reportes**: reporte de pedidos por período con exportación a **CSV**.
+- Modo claro y oscuro, y diseño responsive con barra lateral.
+
+### Tecnologías
+
+| Área | Stack |
+|---|---|
+| Framework | Next.js 15 (App Router, Server Actions), React 19, TypeScript |
+| Base de datos | PostgreSQL en [Neon](https://neon.tech), consultas SQL con `@neondatabase/serverless` |
+| UI | Tailwind CSS 3, shadcn/ui (Radix UI), lucide-react, next-themes |
+| Gráficos | Recharts |
+| Formularios | react-hook-form, zod |
+
+### Estructura
+
+```
+app/
+  actions/        # Server Actions: productos, clientes, pedidos
+  inventory/      # inventario
+  customers/      # clientes
+  orders/         # pedidos
+  reports/        # reportes
+  types/          # tipos de dominio (Product, Customer, Order)
+components/       # componentes por módulo + ui/ (shadcn)
+lib/db.ts         # conexión a Neon
+prisma/           # seed con productos de ejemplo
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Tablas usadas: `products`, `categories`, `suppliers`, `product_history`, `customers`, `orders`, `order_items`, `order_history`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Puesta en marcha
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Requisitos: Node.js 18.18 o superior y una base PostgreSQL (por ejemplo, un proyecto gratuito en Neon) con las tablas de arriba.
 
-## Learn More
+1. Instalar dependencias:
+   ```bash
+   npm install
+   ```
+2. Crear `.env.local` con la cadena de conexión:
+   ```dotenv
+   DATABASE_URL=postgresql://usuario:clave@host/base?sslmode=require
+   ```
+3. Levantar el servidor de desarrollo:
+   ```bash
+   npm run dev        # http://localhost:3000
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+### Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev        # servidor de desarrollo
+npm run build      # build de producción
+npm run start      # servir el build
+npm run lint       # ESLint
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## English
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Web app for **inventory and order management** for a retail business: manage products, stock, customers and orders from a dashboard, with change history and exportable reports.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Features
+
+- **Inventory**: create, edit and delete products with category, supplier, price, stock and status (in stock, low stock, out of stock). Includes search, filters and charted statistics.
+- **Product history**: every creation or update is logged with the changes made.
+- **Customers**: customer records, filters, detail view and statistics.
+- **Orders**: multi-item orders with statuses, change history and printable orders.
+- **Reports**: order reports by period with **CSV** export.
+- Light and dark mode, responsive layout with a sidebar.
+
+### Tech stack
+
+| Area | Stack |
+|---|---|
+| Framework | Next.js 15 (App Router, Server Actions), React 19, TypeScript |
+| Database | PostgreSQL on [Neon](https://neon.tech), SQL queries via `@neondatabase/serverless` |
+| UI | Tailwind CSS 3, shadcn/ui (Radix UI), lucide-react, next-themes |
+| Charts | Recharts |
+| Forms | react-hook-form, zod |
+
+### Getting started
+
+Requirements: Node.js 18.18 or newer and a PostgreSQL database (e.g. a free Neon project) with the tables listed above.
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create `.env.local` with the connection string:
+   ```dotenv
+   DATABASE_URL=postgresql://user:password@host/db?sslmode=require
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev        # http://localhost:3000
+   ```
+
+### Scripts
+
+```bash
+npm run dev        # development server
+npm run build      # production build
+npm run start      # serve the build
+npm run lint       # ESLint
+```
+
+---
+
+Desarrollado por / Developed by [Christian Sánchez](https://github.com/christiansanchezdt1).
